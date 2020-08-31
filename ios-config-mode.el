@@ -8,7 +8,7 @@
 ;; Homepage: https://github.com/mnewt/IOS-config-mode
 ;; Keywords: extensions
 ;; Package-Requires: ((emacs "24.3"))
-;; SPDX-License-Identifier: GPL 2.0
+;; License: GPL-2.0
 ;; Version: 0.5
 ;;
 ;; This program is not part of Gnu Emacs
@@ -164,6 +164,71 @@
               
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.cfg\\'" . ios-config-mode))
+
+;;;###autoload
+(defun ios-config-add-command-to-interfaces (command &optional intf)
+  "Add COMMAND to interfaces that match regexp INTF.
+
+If COMMAND is already there, do not change it.
+
+If INTF is null, work on all interfaces.
+   This requires the buffer to be indented properly."
+  (interactive "MCommand: \nMInterface: ")
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (while (progn
+               (if (looking-at (concat "^[Ii]nterface " intf))
+                   (let ((block-end (ios-config-find-interface-block (point))))
+                     (if (not (ios-config-command-in-block-p command block-end))
+                         (save-excursion
+                           (goto-char (+ block-end 1))
+                           (insert " " command "\n")))))
+               (not (= (forward-line) 1)))))))
+  
+
+(defun ios-config-find-interface-block (pt)
+  "Find an interface configuration block around PT."
+  (save-excursion
+    (goto-char pt)
+    (forward-line)
+    (while (looking-at "^ .*")
+      (forward-line 1))
+    (- (point) 1)))
+      
+(defun ios-config-command-in-block-p (cmd end)
+  "Return non-nil if CMD is in a block.
+
+Limit search to END."
+  (save-excursion
+    (search-forward-regexp cmd end t)))
+  
+;;;###autoload
+(defun ios-config-unshut-all-interfaces ()
+  "Remove the \"shutdown\" or \"shut\" command from all interfaces.
+
+Add a \"no shutdown\" instead."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "^\\([ \t]*shut\\(down\\)?\\)$" nil t)
+      (beginning-of-line)
+      (kill-line 1)))
+  (ios-config-add-command-to-interfaces "no shutdown"))
+
+;;;###autoload
+(defun ios-config-shut-all-interfaces ()
+  "Remove the \"no shutdown\" or \"no shut\" command from all interfaces.
+
+Add a \"shutdown\" instead."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "^\\([ \t]*no shut\\(down\\)?\\)$" nil t)
+      (beginning-of-line)
+      (kill-line 1)))
+  (ios-config-add-command-to-interfaces "shutdown"))
 
 (provide 'ios-config-mode)
 
