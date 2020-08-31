@@ -41,6 +41,119 @@
   :group 'languages
   :prefix "ios-config-")
 
+(defcustom ios-config-toplevel
+  '("access-group"
+    "access-list"
+    "class-map"
+    "cluster"
+    "controller"
+    "interface"
+    "line"
+    "object-group"
+    "policy-map"
+    "redundancy-map"
+    "route-map"
+    "service-policy"
+    "username"
+    "vrf")
+  "List of top level commands."
+  :group 'ios-config
+  :type '(repeat string))
+
+(defcustom ios-config-commands
+  '("aaa"
+    "active"
+    "address"
+    "alias"
+    "any"
+    "area"
+    "arp"
+    "asdm"
+    "authentication"
+    "boot"
+    "call-home"
+    "card"
+    "channel-group"
+    "cipher"
+    "clacp"
+    "class"
+    "cluster-interface"
+    "console"
+    "crypto"
+    "data-interface"
+    "dead-interval"
+    "description"
+    "destination"
+    "diagnostic"
+    "enable"
+    "encrypted"
+    "extended"
+    "failover"
+    "for"
+    "ftp"
+    "group-object"
+    "health-check"
+    "hello-interval"
+    "host"
+    "hostname"
+    "http"
+    "icmp"
+    "icmp-object"
+    "inspect"
+    "ip"
+    "jumbo-frame"
+    "lacp"
+    "local"
+    "local-unit"
+    "logging"
+    "mac-address"
+    "management-only"
+    "match"
+    "message-digest-key"
+    "message-length"
+    "mode"
+    "monitor-interface"
+    "mtu"
+    "nameif"
+    "names"
+    "network"
+    "network-object"
+    "ospf"
+    "pager"
+    "parameters"
+    "password"
+    "permit"
+    "pool"
+    "port-channel"
+    "prefix-list"
+    "priority"
+    "privilege"
+    "prompt"
+    "protocol-object"
+    "scopy"
+    "security-level"
+    "server"
+    "service"
+    "service-object"
+    "service-type"
+    "shutdown"
+    "snmp-server"
+    "ssh"
+    "ssl"
+    "system-priority"
+    "telnet"
+    "threat-detection"
+    "timeout"
+    "type"
+    "user-identity"
+    "version"
+    "vlan"
+    "vss-id"
+    "vtp")
+  "List of subcommands."
+  :group 'ios-config
+  :type '(repeat string))
+
 (defvar ios-config-mode-hook nil
   "Hook called by `ios-config-mode'.")
 
@@ -67,32 +180,11 @@
   "Face for \"no\" prefixed commands.")
 
 (defconst ios-config-font-lock-keywords
-  `((,(concat "\\_<"
-       (regexp-opt '("access-list" "class-map" "controller" "interface" "vrf"
-                     "line" "policy-map" "redundancy-map" "route-map"
-                     "object-group" "access-group" "cluster" "username"
-                     "service-policy") t)
-       "\\_>")
+  `((,(concat "\\_<" (regexp-opt ios-config-toplevel t) "\\_>")
      . 'ios-config-toplevel-face)
-    (,(concat "\\_<"
-       (regexp-opt '("alias" "boot" "card" "diagnostic" "enable" "hostname"
-                     "logging" "service" "snmp-server" "version" "vtp" "names"
-                     "description" "lacp" "port-channel" "mac-address" "vlan"
-                     "nameif" "security-level" "ip" "ospf" "ftp"
-                     "network-object" "service-object" "icmp-object"
-                     "protocol-object" "group-object" "host" "network" "mtu"
-                     "icmp" "asdm" "prefix-list" "timeout" "user-identity" "aaa"
-                     "http" "crypto" "telnet" "ssh" "console" "threat-detection"
-                     "ssl" "service-type" "match" "class" "parameters" "inspect"
-                     "prompt" "jumbo-frame" "shutdown" "address"
-                     "management-only" "destination" "extended" "permit" "any"
-                     "type" "for" "priority" "health-check" "failover"
-                     "monitor-interface" "arp" "area" "server" "scopy"
-                     "message-length" "call-home" "password" "encrypted"
-                     "privilege") t)
-       "\\_>")
+    (,(concat "\\_<" (regexp-opt ios-config-commands t) "\\_>")
      . 'ios-config-command-face)
-    ("\\<\\(no\\)\\>" . ios-config-no-face)
+    ("\\<\\(no\\)\\>" . 'ios-config-no-face)
     ("\\<\\([0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\)\\>"
      . 'ios-config-ipadd-face))
 
