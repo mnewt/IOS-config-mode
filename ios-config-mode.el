@@ -232,11 +232,17 @@
 
 (defvar ios-config-mode-syntax-table
   (let ((table (make-syntax-table)))
-    (modify-syntax-entry ?_ "w" table) ;All _'s are part of words.
-    (modify-syntax-entry ?- "w" table) ;All -'s are part of words.
-    (modify-syntax-entry ?! "<" table) ;All !'s start comments.
-    (modify-syntax-entry ?\n ">" table) ;All newlines end comments.
-    (modify-syntax-entry ?\r ">" table)) ;All linefeeds end comments.
+    ;; All _'s are part of words.
+    (modify-syntax-entry ?_ "w" table)
+    ;; All -'s are part of words.
+    (modify-syntax-entry ?- "w" table)
+    ;; All !'s start comments.
+    (modify-syntax-entry ?! "<" table)
+    ;; All newlines end comments.
+    (modify-syntax-entry ?\n ">" table)
+    ;; All linefeeds end comments.
+    (modify-syntax-entry ?\r ">" table)
+    table)
   "Syntax table for cisco router mode.")
 
 ;;;###autoload
